@@ -1,7 +1,58 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     
-  <style id="claude-scrollbar">@layer claude-scrollbar{*{scrollbar-width:thin}html{scrollbar-color:rgb(128 128 128 / 50%) transparent}}</style>
+  <style id="claude-scrollbar">@layer claude-scrollbar{*{scrollbar-width:thin}html{scrollbar-color:rgb(128 128 128 / 50%) transparent}}
+/* ---------- Q&A ---------- */
+.qna-intro{font-family:"Nanum Myeongjo",serif;font-size:clamp(15px,1.45vw,18px);line-height:2;color:var(--silt);margin:0 0 clamp(30px,4vh,46px);max-width:44ch}
+.ask-form{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:18px clamp(20px,4vw,48px);align-items:start;border-top:1px solid var(--ink);padding-top:26px;max-width:1000px}
+.field label{display:block;font-size:10.5px;letter-spacing:.16em;color:var(--grey);font-weight:500;margin-bottom:9px}
+.field input,.field textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);padding:9px 0;border-radius:0}
+.field textarea{resize:vertical;min-height:94px;line-height:1.8;font-family:"Nanum Myeongjo",serif}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--ink)}
+.field input::placeholder,.field textarea::placeholder{color:#AFAFA8}
+.ask-foot{grid-column:2;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hint{font-size:11.5px;color:var(--grey);line-height:1.7;margin:0}
+button.send{font:inherit;font-size:12.5px;letter-spacing:.02em;font-weight:500;cursor:pointer;padding:13px 28px;border:0;background:var(--ink);color:var(--paper)}
+button.send:hover{background:var(--silt)}
+button.send[disabled]{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+.thread{margin-top:clamp(52px,8vh,86px)}
+.thread-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding-top:18px;margin-bottom:8px}
+.thread-head h3{font-size:13px;font-weight:600;letter-spacing:.16em;margin:0}
+.thread-head span{font-size:11px;letter-spacing:.14em;color:var(--grey);font-weight:500}
+ol.list{list-style:none;margin:0;padding:0}
+ol.list > li{border-top:1px solid var(--line);padding:clamp(26px,4vh,38px) 0}
+ol.list > li:first-child{border-top:0}
+.q-meta{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:10.5px;letter-spacing:.14em;color:var(--grey);font-weight:500;margin-bottom:12px}
+.q-meta .who{color:var(--ink);letter-spacing:.1em}
+.q-body{font-family:"Nanum Myeongjo",serif;font-size:clamp(16px,1.5vw,19px);line-height:1.95;margin:0;max-width:60ch;white-space:pre-wrap;word-break:break-word}
+.r-list{list-style:none;margin:22px 0 0;padding:0 0 0 clamp(16px,2vw,28px);border-left:1px solid var(--line)}
+.r-list li{padding:14px 0}
+.r-list li + li{border-top:1px solid var(--line)}
+.r-body{font-family:"Nanum Myeongjo",serif;font-size:15px;line-height:1.9;margin:0;max-width:56ch;white-space:pre-wrap;word-break:break-word}
+.tag{display:inline-block;background:var(--ink);color:var(--paper);font-size:9px;letter-spacing:.14em;font-weight:600;padding:3px 7px}
+.r-open{font:inherit;font-size:10.5px;letter-spacing:.14em;font-weight:500;color:var(--grey);background:none;border:0;padding:14px 0 0;cursor:pointer}
+.r-open:hover{color:var(--ink)}
+.r-form{display:none;gap:12px;margin:14px 0 0;padding:0 0 0 clamp(16px,2vw,28px);border-left:1px solid var(--line)}
+.r-form.open{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr)}
+.del{font:inherit;font-size:10.5px;letter-spacing:.12em;color:var(--grey);background:none;border:0;cursor:pointer;padding:0}
+.del:hover{color:#B23B2E}
+.state{font-size:13px;line-height:1.9;color:var(--grey);padding:34px 0;border-top:1px solid var(--line);margin:0}
+.state b{display:block;color:var(--ink);font-size:11px;letter-spacing:.16em;margin-bottom:10px}
+.state code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#DEDED8;padding:2px 5px}
+.admin{position:fixed;right:18px;bottom:18px;z-index:30;display:none;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;background:var(--ink);color:var(--paper);padding:10px;max-width:calc(100vw - 36px)}
+.admin.show{display:flex}
+.admin input{font:inherit;font-size:12px;background:#1d1d1d;color:#fff;border:1px solid #333;padding:8px 10px;width:150px}
+.admin button{font:inherit;font-size:12px;cursor:pointer;border:0;padding:9px 13px;background:#fff;color:#111}
+.admin span{font-size:11px;letter-spacing:.1em}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:820px){
+  .ask-form,.r-form.open{grid-template-columns:1fr}
+  .ask-foot{grid-column:1}
+}
+</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MU:D ARCHIVE</title>
@@ -325,14 +376,48 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   </div>
 </section>
 
-<section class="foot" id="contact">
+<section class="qna" id="contact">
+  <div class="sec-head">
+    <h2>Q&amp;A</h2>
+    <span>질문과 답은 모두에게 공개됩니다</span>
+  </div>
+  <p class="qna-intro kr">사이즈, 소재, 입고 일정 — 무엇이든 물어보세요. 오간 이야기는 그대로 아카이브에 남습니다.</p>
+
+  <h3 class="sr-only">질문 남기기</h3>
+  <form class="ask-form" id="ask-form">
+    <div class="field">
+      <label for="ask-name">이름</label>
+      <input id="ask-name" type="text" maxlength="24" required placeholder="닉네임도 괜찮습니다" autocomplete="nickname">
+    </div>
+    <div class="field">
+      <label for="ask-body">질문</label>
+      <textarea id="ask-body" maxlength="1000" required placeholder="사이즈, 소재, 입고 일정, 무엇이든"></textarea>
+    </div>
+    <div class="ask-foot">
+      <p class="hint">한 번 올린 글은 직접 지울 수 없습니다. 개인정보는 적지 마세요.</p>
+      <button class="send" type="submit" id="ask-send">질문 올리기</button>
+    </div>
+  </form>
+
+  <div class="thread">
+    <div class="thread-head">
+      <h3>QUESTIONS</h3>
+      <span id="thread-count"></span>
+    </div>
+    <p class="state" id="state" hidden></p>
+    <ol class="list" id="list"></ol>
+  </div>
+</section>
+
+<section class="foot">
   <div>
     <div class="foot-mark"><svg aria-label="MU:D ARCHIVE" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 939 64" preserveAspectRatio="xMidYMid meet"><path fill="currentColor" fill-rule="evenodd" d="M213.94,46.62 213.88,47.75 213.96,48.50 214.17,49.25 214.49,49.75 215.17,50.60 216.29,51.67 218.12,52.68 220.62,53.49 221.50,53.68 222.12,53.75 225.50,53.75 226.25,53.67 227.12,53.50 228.50,53.01 229.88,52.67 231.62,51.57 232.58,50.69 233.21,49.88 233.68,49.12 233.81,48.75 233.88,48.25 233.83,46.62 233.61,46.00 232.75,44.75 232.46,44.42 231.12,43.31 229.38,42.35 229.00,42.19 227.62,41.93 226.50,41.81 225.00,41.50 222.75,41.50 222.12,41.57 219.50,42.06 219.00,42.19 217.88,42.76 217.00,43.11 215.62,44.03 215.11,44.51 214.18,45.88Z M213.93,15.38 213.88,16.62 213.94,17.25 214.12,17.88 215.03,19.25 215.62,19.88 216.62,20.61 217.75,21.07 218.88,21.72 222.38,22.43 223.00,22.50 224.88,22.50 225.50,22.43 227.88,21.93 228.88,21.68 230.00,21.11 230.88,20.76 231.38,20.44 232.12,19.79 232.76,19.12 233.25,18.50 233.68,17.75 233.82,17.25 233.88,16.75 233.88,15.62 233.81,15.12 233.68,14.75 232.67,13.29 231.50,12.31 230.00,11.40 229.38,11.10 227.88,10.78 226.50,10.29 224.75,10.12 222.62,10.12 222.12,10.18 218.00,11.21 216.40,12.17 215.29,13.18 214.24,14.50 214.06,14.88Z M747.25,2.93 746.72,3.28 746.50,4.00 746.56,60.25 746.90,60.78 747.62,61.00 762.88,60.92 763.38,60.57 763.57,60.00 763.56,3.62 763.11,3.03 762.50,2.88Z M470.25,3.28 470.08,60.12 470.43,60.85 486.12,61.03 486.88,60.61 487.00,40.88 487.31,40.08 488.25,39.75 504.12,39.75 505.12,40.01 523.75,60.89 541.25,61.01 541.74,60.79 541.49,59.75 522.64,38.50 523.12,37.79 528.88,35.68 532.88,33.28 536.67,29.58 538.61,25.88 539.12,22.62 538.76,17.38 537.61,14.62 534.25,10.40 531.25,8.26 527.00,6.14 520.88,4.25 515.62,3.31 506.62,2.88 471.12,2.88Z M487.06,12.38 487.22,12.01 487.51,11.72 488.25,11.50 505.38,11.50 511.12,11.96 514.75,12.89 517.25,13.96 518.88,15.08 519.62,15.75 520.85,17.25 521.57,18.75 521.93,20.12 522.00,21.25 521.76,23.50 520.79,25.62 518.62,27.82 517.00,28.79 514.88,29.71 514.12,29.92 509.50,30.79 507.25,31.00 487.75,30.94 487.21,30.60 487.00,30.00Z M371.03,60.38 371.29,60.90 371.75,61.07 388.49,60.86 390.47,58.00 396.14,47.51 396.75,46.94 398.00,46.62 432.12,46.71 432.89,47.25 439.26,59.00 440.53,60.82 457.38,61.00 457.92,60.79 458.08,60.38 425.35,3.50 424.12,2.88 404.88,2.88 403.68,3.50Z M414.26,14.89 414.62,14.82 414.88,14.90 415.50,15.50 417.26,18.88 417.88,19.75 418.79,21.38 419.19,22.38 420.17,24.12 420.86,25.12 422.11,27.62 422.75,28.62 423.24,29.62 423.76,30.38 424.19,31.38 426.78,35.88 427.44,37.38 427.42,37.74 427.11,38.08 426.38,38.25 402.75,38.25 402.25,38.15 401.85,37.85 401.72,37.50 401.82,37.00 402.50,36.00 403.08,34.62 405.03,31.12 405.68,30.12 406.07,29.12 406.68,28.12 406.99,27.38 408.68,24.62 409.08,23.62 411.68,19.12 412.07,18.12 413.00,16.50 413.86,15.25Z M251.18,3.39 251.08,60.12 251.53,60.90 290.50,60.88 299.50,59.78 304.25,58.74 310.88,56.60 314.88,54.68 318.35,52.61 323.00,48.62 326.68,43.62 328.64,38.88 329.50,32.88 329.44,29.88 328.57,24.75 326.56,20.00 323.40,15.62 321.25,13.47 318.38,11.21 315.12,9.19 311.12,7.24 305.38,5.35 300.38,4.18 294.12,3.25 285.38,2.88 252.12,2.88Z M268.22,12.18 268.62,11.88 269.25,11.75 283.62,11.75 290.62,12.04 293.50,12.68 296.50,13.11 297.75,13.62 299.50,14.01 300.62,14.57 302.25,15.07 305.38,16.99 308.15,19.50 309.86,21.62 310.79,23.38 311.79,25.88 312.17,27.75 312.50,30.50 312.50,33.38 311.83,38.00 310.83,40.38 308.92,43.50 306.62,45.82 303.62,47.93 302.00,48.82 300.50,49.28 299.38,49.86 295.50,50.94 288.38,52.00 269.50,52.12 268.39,51.79 268.00,51.00 268.00,12.88Z M119.65,3.39 119.69,43.25 120.42,46.12 122.21,49.38 126.07,53.47 128.88,55.47 135.62,58.58 144.00,60.81 153.25,61.88 164.88,61.75 173.25,60.60 180.12,58.76 182.88,57.68 187.00,55.56 189.60,53.75 192.17,51.50 194.62,48.25 195.75,46.00 196.67,42.38 196.72,3.75 196.24,3.03 180.62,2.88 179.72,3.28 179.50,40.88 178.86,43.62 177.78,45.62 175.96,47.51 172.62,49.82 167.00,51.86 159.25,52.88 153.50,52.54 148.88,51.82 143.50,49.85 140.00,47.51 138.18,45.50 137.08,43.50 136.38,40.00 136.15,3.28 135.25,2.88 120.62,2.88Z M875.08,3.17 874.85,60.12 875.17,60.79 936.58,60.82 936.88,53.50 936.12,52.32 892.88,52.38 892.07,51.99 891.75,51.00 891.75,37.62 892.50,36.21 932.25,36.12 933.07,35.82 933.38,35.00 933.35,28.62 932.50,27.78 892.39,27.61 891.75,26.25 891.75,12.88 892.07,11.89 892.88,11.50 935.88,11.49 936.47,11.11 936.68,10.25 936.44,3.18 935.62,2.88 876.25,2.85Z M775.79,3.50 808.17,60.12 808.75,60.75 809.62,61.00 829.00,61.00 829.79,60.61 862.85,3.50 862.12,2.81 845.62,2.88 844.43,3.40 819.94,48.49 819.25,48.85 818.62,48.58 817.99,47.75 794.18,3.42 793.12,2.83 776.50,2.88Z M728.60,3.18 727.88,2.88 712.75,2.85 712.00,3.26 711.88,26.38 711.12,27.64 668.75,27.75 667.54,27.24 667.12,26.12 667.01,3.28 666.12,2.88 650.53,3.10 650.15,3.75 650.35,60.60 651.25,61.00 666.12,61.00 667.01,60.60 667.12,37.75 667.36,36.88 668.12,36.24 710.25,36.12 711.44,36.56 711.88,37.75 712.00,60.61 712.75,61.01 728.46,60.78 728.79,60.12Z M2.14,3.26 2.00,60.12 2.50,60.97 17.38,61.00 18.50,60.36 18.50,21.88 19.12,21.06 19.92,21.50 45.43,60.35 46.75,60.88 57.00,60.88 58.49,60.00 83.89,21.50 84.88,21.04 85.38,21.88 85.36,60.38 86.38,61.00 100.75,61.00 101.69,60.49 101.79,3.75 101.44,3.03 80.64,3.21 53.75,43.38 51.88,45.11 50.19,43.75 23.12,3.28 22.12,2.83 3.12,2.82Z M554.18,20.75 552.22,26.75 551.88,33.62 552.08,36.38 553.22,40.75 555.25,44.88 558.62,49.38 563.62,53.65 568.75,56.69 576.75,59.60 582.00,60.78 592.38,61.88 602.62,61.62 613.25,59.74 619.38,57.67 626.62,53.67 631.82,48.88 633.61,46.25 635.00,43.25 634.99,42.31 634.25,41.94 618.62,42.00 615.12,46.62 610.50,49.79 603.50,51.94 595.50,52.72 586.62,51.82 580.62,49.81 575.25,46.39 573.18,44.38 570.96,41.25 569.24,36.38 568.88,34.00 569.06,28.12 570.04,24.75 572.21,20.75 575.25,17.50 578.75,15.04 583.00,13.12 587.38,11.93 595.25,11.17 604.25,12.06 608.00,13.07 612.75,15.39 615.38,17.50 618.88,22.28 634.00,22.38 634.79,22.07 634.86,20.50 633.71,17.75 631.69,14.75 628.12,11.18 625.58,9.25 621.88,7.24 613.88,4.25 608.88,3.10 598.25,2.00 588.38,2.25 577.25,4.15 569.00,7.19 562.51,11.06 558.43,14.75Z"></path></svg></div>
     <a class="cta" href="mailto:hello@mudarchive.kr">새 STATE 소식 받기</a>
   </div>
   <div class="foot-lines">
     서울특별시 마포구<br>mudarchive@gmail.com<br>
-    <a href="https://instagram.com/" target="_blank" rel="noopener">@mud</a>archive__</div>
+    <a href="https://instagram.com/" target="_blank" rel="noopener">@mud</a>archive__<br>
+    <a href="#contact">Q&amp;A</a></div>
 </section>
 
 <div class="colophon">
@@ -592,6 +677,268 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
+})();
+</script>
+<div class="admin" id="admin">
+  <span id="admin-who">운영자 로그인</span>
+  <input id="admin-email" type="email" placeholder="이메일" autocomplete="username">
+  <input id="admin-pw" type="password" placeholder="비밀번호" autocomplete="current-password">
+  <button id="admin-in" type="button">로그인</button>
+  <button id="admin-out" type="button" hidden>로그아웃</button>
+</div>
+
+<script>
+/* ============================================================
+   Q&A — 설정할 것이 없습니다.
+   질문과 댓글은 /api/qna 를 거쳐 GitHub 저장소의
+   data/qna.json 에 기록됩니다.
+   Vercel 환경 변수 세 가지만 넣어두면 바로 동작합니다.
+     GITHUB_TOKEN / GITHUB_REPO / ADMIN_PASSWORD
+   ============================================================ */
+(function () {
+  var listEl = document.getElementById('list');
+  var countEl = document.getElementById('thread-count');
+  var stateEl = document.getElementById('state');
+  var form = document.getElementById('ask-form');
+  var sendBtn = document.getElementById('ask-send');
+  var adminBar = document.getElementById('admin');
+
+  var POLL_MS = 6000;           // 몇 초마다 새 글을 확인할지
+  var pw = '';                  // 운영자 비밀번호 (이 브라우저에만 남습니다)
+  var isStaff = false;
+  var rows = [];
+  var openIds = {};             // 열어둔 댓글창은 새로고침해도 닫히지 않게
+
+  try { pw = sessionStorage.getItem('mud-admin') || ''; } catch (e) {}
+
+  function say(title, text) {
+    stateEl.hidden = false;
+    stateEl.textContent = '';
+    if (title) { var b = document.createElement('b'); b.textContent = title; stateEl.appendChild(b); }
+    stateEl.appendChild(document.createTextNode(text));
+  }
+
+  function when(iso) {
+    var d = new Date(iso), diff = (new Date() - d) / 1000;
+    if (diff < 60) return '방금';
+    if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+    if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+    var p = function (x) { return (x < 10 ? '0' : '') + x; };
+    return d.getFullYear() + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate());
+  }
+
+  /* 입력값은 항상 textContent로 넣습니다 — HTML로 해석되지 않습니다 */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* ---------- 서버와 주고받기 ---------- */
+  function get() {
+    return fetch('/api/qna', { cache: 'no-store' }).then(function (r) { return r.json(); });
+  }
+  function post(payload) {
+    if (pw) payload.password = pw;
+    return fetch('/api/qna', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json().then(function (j) { j._status = r.status; return j; }); });
+  }
+
+  function apply(j) {
+    if (j && j.error) { say('불러오지 못했습니다', j.error); return false; }
+    if (!j || !j.questions) return false;
+    rows = j.questions;
+    render();
+    return true;
+  }
+
+  /* ---------- 그리기 ---------- */
+  function delButton(kind, rid) {
+    var b = el('button', 'del', '삭제');
+    b.type = 'button';
+    b.addEventListener('click', function () {
+      if (!window.confirm('이 글을 지울까요? 되돌릴 수 없습니다.')) return;
+      post({ action: 'delete', kind: kind, id: rid }).then(function (j) {
+        if (j.error) window.alert(j.error); else apply(j);
+      });
+    });
+    return b;
+  }
+
+  function replyForm(q) {
+    var f = el('form', 'r-form');
+    if (openIds[q.id]) f.className = 'r-form open';
+
+    var f1 = el('div', 'field');
+    var l1 = el('label', null, '이름'), i1 = document.createElement('input');
+    i1.type = 'text'; i1.maxLength = 24; i1.required = true; i1.placeholder = '이름';
+    i1.id = 'rn-' + q.id; l1.setAttribute('for', i1.id);
+    f1.appendChild(l1); f1.appendChild(i1);
+
+    var f2 = el('div', 'field');
+    var l2 = el('label', null, '댓글'), i2 = document.createElement('textarea');
+    i2.maxLength = 1000; i2.required = true; i2.placeholder = '답을 아는 분이라면 함께 알려주세요';
+    i2.style.minHeight = '72px';
+    i2.id = 'rb-' + q.id; l2.setAttribute('for', i2.id);
+    f2.appendChild(l2); f2.appendChild(i2);
+
+    var foot = el('div', 'ask-foot');
+    var btn = el('button', 'send', '댓글 남기기'); btn.type = 'submit';
+    foot.appendChild(el('p', 'hint', '')); foot.appendChild(btn);
+
+    f.appendChild(f1); f.appendChild(f2); f.appendChild(foot);
+
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = i1.value.trim(), text = i2.value.trim();
+      if (!name || !text) return;
+      btn.disabled = true; btn.textContent = '올리는 중';
+      post({ action: 'reply', question_id: q.id, name: name, body: text }).then(function (j) {
+        btn.disabled = false; btn.textContent = '댓글 남기기';
+        if (j.error) { window.alert(j.error); return; }
+        openIds[q.id] = false;
+        apply(j);
+      });
+    });
+    return f;
+  }
+
+  function render() {
+    listEl.textContent = '';
+    countEl.textContent = rows.length ? rows.length + '개' : '';
+
+    if (!rows.length) { say('', '아직 질문이 없습니다. 첫 번째 질문을 남겨보세요.'); return; }
+    stateEl.hidden = true;
+
+    rows.forEach(function (q) {
+      var li = document.createElement('li');
+
+      var meta = el('div', 'q-meta');
+      meta.appendChild(el('span', 'who', q.name));
+      meta.appendChild(el('span', null, when(q.created_at)));
+      if (isStaff) meta.appendChild(delButton('question', q.id));
+      li.appendChild(meta);
+      li.appendChild(el('p', 'q-body', q.body));
+
+      var reps = (q.replies || []).slice();
+      if (reps.length) {
+        var ul = el('ul', 'r-list');
+        reps.forEach(function (r) {
+          var rli = document.createElement('li');
+          var rm = el('div', 'q-meta');
+          if (r.is_staff) rm.appendChild(el('span', 'tag', 'MU:D'));
+          rm.appendChild(el('span', 'who', r.name));
+          rm.appendChild(el('span', null, when(r.created_at)));
+          if (isStaff) rm.appendChild(delButton('reply', r.id));
+          rli.appendChild(rm);
+          rli.appendChild(el('p', 'r-body', r.body));
+          ul.appendChild(rli);
+        });
+        li.appendChild(ul);
+      }
+
+      var open = el('button', 'r-open', reps.length ? '댓글 ' + reps.length + ' · 댓글 달기' : '댓글 달기');
+      open.type = 'button';
+      var rf = replyForm(q);
+      open.addEventListener('click', function () {
+        rf.classList.toggle('open');
+        openIds[q.id] = rf.classList.contains('open');
+        if (openIds[q.id]) rf.querySelector('input').focus();
+      });
+      li.appendChild(open);
+      li.appendChild(rf);
+      listEl.appendChild(li);
+    });
+  }
+
+  /* ---------- 질문 올리기 ---------- */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('ask-name').value.trim();
+    var text = document.getElementById('ask-body').value.trim();
+    if (!name || text.length < 2) return;
+    sendBtn.disabled = true; sendBtn.textContent = '올리는 중';
+    post({ action: 'ask', name: name, body: text }).then(function (j) {
+      sendBtn.disabled = false; sendBtn.textContent = '질문 올리기';
+      if (j.error) { window.alert(j.error); return; }
+      document.getElementById('ask-body').value = '';
+      apply(j);
+      var box = document.querySelector('.thread');
+      window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
+    });
+  });
+
+  /* ---------- 새 글 확인 ---------- */
+  function tick() {
+    if (document.hidden) return;                 // 다른 탭을 보는 동안은 쉽니다
+    get().then(function (j) {
+      if (j && j.questions && JSON.stringify(j.questions) !== JSON.stringify(rows)) apply(j);
+    }).catch(function () {});
+  }
+  setInterval(tick, POLL_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+
+  /* ---------- 운영자 (주소 끝에 ?admin) ---------- */
+  var emailEl = document.getElementById('admin-email');
+  var pwEl = document.getElementById('admin-pw');
+  var inBtn = document.getElementById('admin-in');
+  var outBtn = document.getElementById('admin-out');
+  var whoEl = document.getElementById('admin-who');
+
+  emailEl.remove();                               // 이 방식은 비밀번호만 씁니다
+
+  function setStaff(on) {
+    isStaff = on;
+    pwEl.hidden = on; inBtn.hidden = on;
+    outBtn.hidden = !on;
+    whoEl.textContent = on ? '운영자 로그인됨' : '운영자 로그인';
+    render();
+  }
+
+  if (location.search.indexOf('admin') > -1) adminBar.classList.add('show');
+
+  if (pw) {
+    post({ action: 'login' }).then(function (j) {
+      if (j.ok) { adminBar.classList.add('show'); setStaff(true); }
+      else { pw = ''; try { sessionStorage.removeItem('mud-admin'); } catch (e) {} }
+    });
+  }
+
+  inBtn.addEventListener('click', function () {
+    var v = pwEl.value;
+    if (!v) return;
+    inBtn.disabled = true;
+    pw = v;
+    post({ action: 'login' }).then(function (j) {
+      inBtn.disabled = false;
+      if (!j.ok) { pw = ''; window.alert(j.error || '로그인하지 못했습니다.'); return; }
+      try { sessionStorage.setItem('mud-admin', v); } catch (e) {}
+      pwEl.value = '';
+      setStaff(true);
+    });
+  });
+
+  outBtn.addEventListener('click', function () {
+    pw = '';
+    try { sessionStorage.removeItem('mud-admin'); } catch (e) {}
+    setStaff(false);
+  });
+
+  /* ---------- 시작 ---------- */
+  get().then(function (j) {
+    if (j && j.error) {
+      say('아직 준비 중입니다', 'Vercel 환경 변수(GITHUB_TOKEN, GITHUB_REPO, ADMIN_PASSWORD)를 넣으면 질문이 열립니다.');
+      form.querySelectorAll('input,textarea,button').forEach(function (n) { n.disabled = true; });
+      return;
+    }
+    apply(j);
+  }).catch(function () {
+    say('연결하지 못했습니다', '잠시 후 다시 열어주세요.');
+  });
 })();
 </script>
 </body></html>
