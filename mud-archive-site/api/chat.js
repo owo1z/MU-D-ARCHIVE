@@ -159,16 +159,34 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'OPTIONS') { res.statusCode = 204; res.end(); return; }
 
-  var hasKey = !!process.env.ANTHROPIC_API_KEY;
-  var model = process.env.CLAUDE_MODEL || DEFAULT_MODEL;
+  var rawKey = process.env.ANTHROPIC_API_KEY || '';
+  var apiKey = rawKey.trim();                    /* 붙여넣을 때 섞인 공백·줄바꿈 제거 */
+  var hasKey = !!apiKey;
+  var model = (process.env.CLAUDE_MODEL || DEFAULT_MODEL).trim();
 
   /* 점검: /api/chat?check=1 */
   if (req.method === 'GET' && /[?&]check=/.test(req.url || '')) {
+    var shape = null;
+    if (rawKey) {
+      var masked = /\u00b7|\u2026|\.\.\./.test(rawKey);
+      shape = {
+        앞부분: apiKey.slice(0, 13) + '…',        /* 공개되어도 되는 접두사만 */
+        길이: apiKey.length,
+        앞뒤공백: rawKey === apiKey ? '없음' : '있었음(자동으로 제거함)',
+        가려진문자: masked ? '있음 — 목록의 미리보기를 복사하신 것 같습니다' : '없음',
+        형식: apiKey.indexOf('sk-ant-api') === 0
+                ? (apiKey.length >= 90 ? 'Anthropic 표준 키로 보입니다' : '길이가 너무 짧습니다 — 잘린 키입니다')
+                : (apiKey.indexOf('sk-ant-admin') === 0
+                    ? 'Admin 키입니다 — 상담에는 쓸 수 없습니다'
+                    : 'sk-ant-api 로 시작하지 않습니다 — Anthropic 키가 아닙니다')
+      };
+    }
     var report = {
       환경변수: {
         ANTHROPIC_API_KEY: hasKey ? '설정됨' : '없음',
         CLAUDE_MODEL: process.env.CLAUDE_MODEL || '(미설정 — ' + DEFAULT_MODEL + ' 사용)'
       },
+      키형태: shape || '키가 없습니다',
       지식베이스: {
         구간수: SECTIONS.length,
         글자수: String(KNOWLEDGE).length,
@@ -185,7 +203,7 @@ module.exports = async function handler(req, res) {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'x-api-key': apiKey,
           'anthropic-version': API_VERSION
         },
         body: JSON.stringify({ model: model, max_tokens: 16, messages: [{ role: 'user', content: '안녕' }] })
@@ -239,7 +257,7 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'x-api-key': apiKey,
         'anthropic-version': API_VERSION
       },
       body: JSON.stringify({
