@@ -52,6 +52,95 @@ ol.list > li:first-child{border-top:0}
   .ask-form,.r-form.open{grid-template-columns:1fr}
   .ask-foot{grid-column:1}
 }
+
+/* ---------- 고객 상담 ---------- */
+.nav a.nav-kr{letter-spacing:.04em;font-variation-settings:"wdth" 100}
+
+.chat-open-inline{
+  display:inline-block;margin-top:14px;padding:11px 20px;border:1px solid var(--ink);
+  background:transparent;color:var(--ink);font-size:12.5px;letter-spacing:.02em;
+  font-weight:500;cursor:pointer;
+}
+.chat-open-inline:hover{background:var(--ink);color:var(--paper)}
+
+.chat-veil{
+  position:fixed;inset:0;z-index:60;background:rgba(20,20,18,.42);
+  opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s;
+}
+.chat-veil.on{opacity:1;visibility:visible}
+
+.chat{
+  position:fixed;top:0;right:0;bottom:0;z-index:61;
+  width:min(440px,100%);background:var(--paper);color:var(--ink);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+  box-shadow:-10px 0 40px rgba(0,0,0,.14);
+}
+.chat.on{transform:none}
+.chat-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:20px 22px 16px;border-bottom:1px solid var(--line);flex:none;
+}
+.chat-head .mk{width:112px;line-height:0;color:var(--ink)}
+.chat-head .mk svg{width:100%;height:auto;display:block}
+.chat-head .ttl{font-size:10.5px;letter-spacing:.16em;color:var(--grey);font-weight:500;margin-top:7px}
+.chat-x{background:none;border:0;cursor:pointer;font-size:22px;line-height:1;color:var(--grey);padding:4px 6px}
+.chat-x:hover{color:var(--ink)}
+
+.chat-log{flex:1 1 auto;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:20px}
+.msg .who{
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:.14em;color:var(--grey);font-weight:500;margin-bottom:7px;
+}
+.msg .who .tag{background:var(--ink);color:var(--paper);font-size:9px;letter-spacing:.14em;font-weight:600;padding:3px 7px}
+.msg .txt{
+  font-family:"Nanum Myeongjo",serif;font-size:15px;line-height:1.95;margin:0;
+  white-space:pre-wrap;word-break:break-word;
+}
+.msg.me .txt{color:#3a3a37}
+.msg.err .txt{color:#B23B2E;font-family:inherit;font-size:13.5px;line-height:1.7}
+
+.chat-wait{display:flex;gap:5px;align-items:center;padding:2px 0}
+.chat-wait i{width:5px;height:5px;border-radius:50%;background:var(--grey);display:block;animation:cw 1.1s infinite}
+.chat-wait i:nth-child(2){animation-delay:.16s}
+.chat-wait i:nth-child(3){animation-delay:.32s}
+@keyframes cw{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+.chat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chat-chips button{
+  background:transparent;border:1px solid var(--line);color:#333;
+  padding:8px 12px;font-size:12.5px;cursor:pointer;border-radius:999px;
+}
+.chat-chips button:hover{border-color:var(--ink);color:var(--ink)}
+
+.chat-foot{flex:none;border-top:1px solid var(--line);padding:14px 22px 18px;background:var(--paper)}
+.chat-form{display:flex;gap:10px;align-items:flex-end}
+.chat-form textarea{
+  flex:1 1 auto;min-height:44px;max-height:132px;resize:none;
+  background:#FAFAF8;border:1px solid var(--line);padding:11px 12px;
+  font:inherit;font-size:14.5px;line-height:1.6;border-radius:6px;color:var(--ink);
+}
+.chat-form textarea:focus{border-color:var(--ink);outline:none}
+.chat-send{
+  flex:none;background:var(--ink);color:var(--paper);border:0;cursor:pointer;
+  padding:13px 18px;font-size:12.5px;letter-spacing:.02em;font-weight:500;
+}
+.chat-send:hover{background:var(--silt)}
+.chat-send[disabled]{opacity:.4;cursor:default}
+.chat-note{font-size:11px;line-height:1.65;color:var(--grey);margin:10px 0 0}
+.chat-note a{border-bottom:1px solid var(--line)}
+.chat-note a:hover{border-color:var(--ink);color:var(--ink)}
+
+@media (max-width:560px){
+  .chat{width:100%}
+  .chat-log{padding:18px}
+  .chat-foot{padding:12px 18px 16px}
+}
+@media (max-width:520px){
+  .nav ul{gap:11px}
+  .nav a{font-size:9.5px;letter-spacing:.08em}
+  .nav a.nav-kr{letter-spacing:0}
+}
 </style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,6 +149,7 @@ ol.list > li:first-child{border-top:0}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Nanum+Myeongjo:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 
 <style>
 :root{
@@ -119,7 +209,16 @@ a{color:inherit}
   display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
   pointer-events:none;
 }
-.hero-line{font-size:clamp(15px,1.5vw,19px);letter-spacing:.02em;margin:0}
+/* 왼쪽 아래 글자 — 가운데 로고처럼 가로로 넓고 세로로 눌린 형태 */
+.hero-line{
+  font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  font-weight:600;
+  font-size:clamp(17px,1.7vw,22px);
+  letter-spacing:.01em;margin:0;
+  transform:scale(1.05,.84);
+  transform-origin:left bottom;
+  white-space:nowrap;
+}
 .hero-hint{font-size:10.5px;letter-spacing:.2em;color:var(--grey);font-weight:500}
 
 /* ---------- sections ---------- */
@@ -222,12 +321,16 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
 
 <body>
 
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="mud-wordmark" viewBox="0 0 939 64"><path fill="currentColor" fill-rule="evenodd" d="M213.94,46.62 213.88,47.75 213.96,48.50 214.17,49.25 214.49,49.75 215.17,50.60 216.29,51.67 218.12,52.68 220.62,53.49 221.50,53.68 222.12,53.75 225.50,53.75 226.25,53.67 227.12,53.50 228.50,53.01 229.88,52.67 231.62,51.57 232.58,50.69 233.21,49.88 233.68,49.12 233.81,48.75 233.88,48.25 233.83,46.62 233.61,46.00 232.75,44.75 232.46,44.42 231.12,43.31 229.38,42.35 229.00,42.19 227.62,41.93 226.50,41.81 225.00,41.50 222.75,41.50 222.12,41.57 219.50,42.06 219.00,42.19 217.88,42.76 217.00,43.11 215.62,44.03 215.11,44.51 214.18,45.88Z M213.93,15.38 213.88,16.62 213.94,17.25 214.12,17.88 215.03,19.25 215.62,19.88 216.62,20.61 217.75,21.07 218.88,21.72 222.38,22.43 223.00,22.50 224.88,22.50 225.50,22.43 227.88,21.93 228.88,21.68 230.00,21.11 230.88,20.76 231.38,20.44 232.12,19.79 232.76,19.12 233.25,18.50 233.68,17.75 233.82,17.25 233.88,16.75 233.88,15.62 233.81,15.12 233.68,14.75 232.67,13.29 231.50,12.31 230.00,11.40 229.38,11.10 227.88,10.78 226.50,10.29 224.75,10.12 222.62,10.12 222.12,10.18 218.00,11.21 216.40,12.17 215.29,13.18 214.24,14.50 214.06,14.88Z M747.25,2.93 746.72,3.28 746.50,4.00 746.56,60.25 746.90,60.78 747.62,61.00 762.88,60.92 763.38,60.57 763.57,60.00 763.56,3.62 763.11,3.03 762.50,2.88Z M470.25,3.28 470.08,60.12 470.43,60.85 486.12,61.03 486.88,60.61 487.00,40.88 487.31,40.08 488.25,39.75 504.12,39.75 505.12,40.01 523.75,60.89 541.25,61.01 541.74,60.79 541.49,59.75 522.64,38.50 523.12,37.79 528.88,35.68 532.88,33.28 536.67,29.58 538.61,25.88 539.12,22.62 538.76,17.38 537.61,14.62 534.25,10.40 531.25,8.26 527.00,6.14 520.88,4.25 515.62,3.31 506.62,2.88 471.12,2.88Z M487.06,12.38 487.22,12.01 487.51,11.72 488.25,11.50 505.38,11.50 511.12,11.96 514.75,12.89 517.25,13.96 518.88,15.08 519.62,15.75 520.85,17.25 521.57,18.75 521.93,20.12 522.00,21.25 521.76,23.50 520.79,25.62 518.62,27.82 517.00,28.79 514.88,29.71 514.12,29.92 509.50,30.79 507.25,31.00 487.75,30.94 487.21,30.60 487.00,30.00Z M371.03,60.38 371.29,60.90 371.75,61.07 388.49,60.86 390.47,58.00 396.14,47.51 396.75,46.94 398.00,46.62 432.12,46.71 432.89,47.25 439.26,59.00 440.53,60.82 457.38,61.00 457.92,60.79 458.08,60.38 425.35,3.50 424.12,2.88 404.88,2.88 403.68,3.50Z M414.26,14.89 414.62,14.82 414.88,14.90 415.50,15.50 417.26,18.88 417.88,19.75 418.79,21.38 419.19,22.38 420.17,24.12 420.86,25.12 422.11,27.62 422.75,28.62 423.24,29.62 423.76,30.38 424.19,31.38 426.78,35.88 427.44,37.38 427.42,37.74 427.11,38.08 426.38,38.25 402.75,38.25 402.25,38.15 401.85,37.85 401.72,37.50 401.82,37.00 402.50,36.00 403.08,34.62 405.03,31.12 405.68,30.12 406.07,29.12 406.68,28.12 406.99,27.38 408.68,24.62 409.08,23.62 411.68,19.12 412.07,18.12 413.00,16.50 413.86,15.25Z M251.18,3.39 251.08,60.12 251.53,60.90 290.50,60.88 299.50,59.78 304.25,58.74 310.88,56.60 314.88,54.68 318.35,52.61 323.00,48.62 326.68,43.62 328.64,38.88 329.50,32.88 329.44,29.88 328.57,24.75 326.56,20.00 323.40,15.62 321.25,13.47 318.38,11.21 315.12,9.19 311.12,7.24 305.38,5.35 300.38,4.18 294.12,3.25 285.38,2.88 252.12,2.88Z M268.22,12.18 268.62,11.88 269.25,11.75 283.62,11.75 290.62,12.04 293.50,12.68 296.50,13.11 297.75,13.62 299.50,14.01 300.62,14.57 302.25,15.07 305.38,16.99 308.15,19.50 309.86,21.62 310.79,23.38 311.79,25.88 312.17,27.75 312.50,30.50 312.50,33.38 311.83,38.00 310.83,40.38 308.92,43.50 306.62,45.82 303.62,47.93 302.00,48.82 300.50,49.28 299.38,49.86 295.50,50.94 288.38,52.00 269.50,52.12 268.39,51.79 268.00,51.00 268.00,12.88Z M119.65,3.39 119.69,43.25 120.42,46.12 122.21,49.38 126.07,53.47 128.88,55.47 135.62,58.58 144.00,60.81 153.25,61.88 164.88,61.75 173.25,60.60 180.12,58.76 182.88,57.68 187.00,55.56 189.60,53.75 192.17,51.50 194.62,48.25 195.75,46.00 196.67,42.38 196.72,3.75 196.24,3.03 180.62,2.88 179.72,3.28 179.50,40.88 178.86,43.62 177.78,45.62 175.96,47.51 172.62,49.82 167.00,51.86 159.25,52.88 153.50,52.54 148.88,51.82 143.50,49.85 140.00,47.51 138.18,45.50 137.08,43.50 136.38,40.00 136.15,3.28 135.25,2.88 120.62,2.88Z M875.08,3.17 874.85,60.12 875.17,60.79 936.58,60.82 936.88,53.50 936.12,52.32 892.88,52.38 892.07,51.99 891.75,51.00 891.75,37.62 892.50,36.21 932.25,36.12 933.07,35.82 933.38,35.00 933.35,28.62 932.50,27.78 892.39,27.61 891.75,26.25 891.75,12.88 892.07,11.89 892.88,11.50 935.88,11.49 936.47,11.11 936.68,10.25 936.44,3.18 935.62,2.88 876.25,2.85Z M775.79,3.50 808.17,60.12 808.75,60.75 809.62,61.00 829.00,61.00 829.79,60.61 862.85,3.50 862.12,2.81 845.62,2.88 844.43,3.40 819.94,48.49 819.25,48.85 818.62,48.58 817.99,47.75 794.18,3.42 793.12,2.83 776.50,2.88Z M728.60,3.18 727.88,2.88 712.75,2.85 712.00,3.26 711.88,26.38 711.12,27.64 668.75,27.75 667.54,27.24 667.12,26.12 667.01,3.28 666.12,2.88 650.53,3.10 650.15,3.75 650.35,60.60 651.25,61.00 666.12,61.00 667.01,60.60 667.12,37.75 667.36,36.88 668.12,36.24 710.25,36.12 711.44,36.56 711.88,37.75 712.00,60.61 712.75,61.01 728.46,60.78 728.79,60.12Z M2.14,3.26 2.00,60.12 2.50,60.97 17.38,61.00 18.50,60.36 18.50,21.88 19.12,21.06 19.92,21.50 45.43,60.35 46.75,60.88 57.00,60.88 58.49,60.00 83.89,21.50 84.88,21.04 85.38,21.88 85.36,60.38 86.38,61.00 100.75,61.00 101.69,60.49 101.79,3.75 101.44,3.03 80.64,3.21 53.75,43.38 51.88,45.11 50.19,43.75 23.12,3.28 22.12,2.83 3.12,2.82Z M554.18,20.75 552.22,26.75 551.88,33.62 552.08,36.38 553.22,40.75 555.25,44.88 558.62,49.38 563.62,53.65 568.75,56.69 576.75,59.60 582.00,60.78 592.38,61.88 602.62,61.62 613.25,59.74 619.38,57.67 626.62,53.67 631.82,48.88 633.61,46.25 635.00,43.25 634.99,42.31 634.25,41.94 618.62,42.00 615.12,46.62 610.50,49.79 603.50,51.94 595.50,52.72 586.62,51.82 580.62,49.81 575.25,46.39 573.18,44.38 570.96,41.25 569.24,36.38 568.88,34.00 569.06,28.12 570.04,24.75 572.21,20.75 575.25,17.50 578.75,15.04 583.00,13.12 587.38,11.93 595.25,11.17 604.25,12.06 608.00,13.07 612.75,15.39 615.38,17.50 618.88,22.28 634.00,22.38 634.79,22.07 634.86,20.50 633.71,17.75 631.69,14.75 628.12,11.18 625.58,9.25 621.88,7.24 613.88,4.25 608.88,3.10 598.25,2.00 588.38,2.25 577.25,4.15 569.00,7.19 562.51,11.06 558.43,14.75Z"></path></symbol></svg>
+
+
 <nav class="nav">
   <div class="nav-mark"><svg aria-label="MU:D ARCHIVE" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 939 64" preserveAspectRatio="xMidYMid meet"><path fill="currentColor" fill-rule="evenodd" d="M213.94,46.62 213.88,47.75 213.96,48.50 214.17,49.25 214.49,49.75 215.17,50.60 216.29,51.67 218.12,52.68 220.62,53.49 221.50,53.68 222.12,53.75 225.50,53.75 226.25,53.67 227.12,53.50 228.50,53.01 229.88,52.67 231.62,51.57 232.58,50.69 233.21,49.88 233.68,49.12 233.81,48.75 233.88,48.25 233.83,46.62 233.61,46.00 232.75,44.75 232.46,44.42 231.12,43.31 229.38,42.35 229.00,42.19 227.62,41.93 226.50,41.81 225.00,41.50 222.75,41.50 222.12,41.57 219.50,42.06 219.00,42.19 217.88,42.76 217.00,43.11 215.62,44.03 215.11,44.51 214.18,45.88Z M213.93,15.38 213.88,16.62 213.94,17.25 214.12,17.88 215.03,19.25 215.62,19.88 216.62,20.61 217.75,21.07 218.88,21.72 222.38,22.43 223.00,22.50 224.88,22.50 225.50,22.43 227.88,21.93 228.88,21.68 230.00,21.11 230.88,20.76 231.38,20.44 232.12,19.79 232.76,19.12 233.25,18.50 233.68,17.75 233.82,17.25 233.88,16.75 233.88,15.62 233.81,15.12 233.68,14.75 232.67,13.29 231.50,12.31 230.00,11.40 229.38,11.10 227.88,10.78 226.50,10.29 224.75,10.12 222.62,10.12 222.12,10.18 218.00,11.21 216.40,12.17 215.29,13.18 214.24,14.50 214.06,14.88Z M747.25,2.93 746.72,3.28 746.50,4.00 746.56,60.25 746.90,60.78 747.62,61.00 762.88,60.92 763.38,60.57 763.57,60.00 763.56,3.62 763.11,3.03 762.50,2.88Z M470.25,3.28 470.08,60.12 470.43,60.85 486.12,61.03 486.88,60.61 487.00,40.88 487.31,40.08 488.25,39.75 504.12,39.75 505.12,40.01 523.75,60.89 541.25,61.01 541.74,60.79 541.49,59.75 522.64,38.50 523.12,37.79 528.88,35.68 532.88,33.28 536.67,29.58 538.61,25.88 539.12,22.62 538.76,17.38 537.61,14.62 534.25,10.40 531.25,8.26 527.00,6.14 520.88,4.25 515.62,3.31 506.62,2.88 471.12,2.88Z M487.06,12.38 487.22,12.01 487.51,11.72 488.25,11.50 505.38,11.50 511.12,11.96 514.75,12.89 517.25,13.96 518.88,15.08 519.62,15.75 520.85,17.25 521.57,18.75 521.93,20.12 522.00,21.25 521.76,23.50 520.79,25.62 518.62,27.82 517.00,28.79 514.88,29.71 514.12,29.92 509.50,30.79 507.25,31.00 487.75,30.94 487.21,30.60 487.00,30.00Z M371.03,60.38 371.29,60.90 371.75,61.07 388.49,60.86 390.47,58.00 396.14,47.51 396.75,46.94 398.00,46.62 432.12,46.71 432.89,47.25 439.26,59.00 440.53,60.82 457.38,61.00 457.92,60.79 458.08,60.38 425.35,3.50 424.12,2.88 404.88,2.88 403.68,3.50Z M414.26,14.89 414.62,14.82 414.88,14.90 415.50,15.50 417.26,18.88 417.88,19.75 418.79,21.38 419.19,22.38 420.17,24.12 420.86,25.12 422.11,27.62 422.75,28.62 423.24,29.62 423.76,30.38 424.19,31.38 426.78,35.88 427.44,37.38 427.42,37.74 427.11,38.08 426.38,38.25 402.75,38.25 402.25,38.15 401.85,37.85 401.72,37.50 401.82,37.00 402.50,36.00 403.08,34.62 405.03,31.12 405.68,30.12 406.07,29.12 406.68,28.12 406.99,27.38 408.68,24.62 409.08,23.62 411.68,19.12 412.07,18.12 413.00,16.50 413.86,15.25Z M251.18,3.39 251.08,60.12 251.53,60.90 290.50,60.88 299.50,59.78 304.25,58.74 310.88,56.60 314.88,54.68 318.35,52.61 323.00,48.62 326.68,43.62 328.64,38.88 329.50,32.88 329.44,29.88 328.57,24.75 326.56,20.00 323.40,15.62 321.25,13.47 318.38,11.21 315.12,9.19 311.12,7.24 305.38,5.35 300.38,4.18 294.12,3.25 285.38,2.88 252.12,2.88Z M268.22,12.18 268.62,11.88 269.25,11.75 283.62,11.75 290.62,12.04 293.50,12.68 296.50,13.11 297.75,13.62 299.50,14.01 300.62,14.57 302.25,15.07 305.38,16.99 308.15,19.50 309.86,21.62 310.79,23.38 311.79,25.88 312.17,27.75 312.50,30.50 312.50,33.38 311.83,38.00 310.83,40.38 308.92,43.50 306.62,45.82 303.62,47.93 302.00,48.82 300.50,49.28 299.38,49.86 295.50,50.94 288.38,52.00 269.50,52.12 268.39,51.79 268.00,51.00 268.00,12.88Z M119.65,3.39 119.69,43.25 120.42,46.12 122.21,49.38 126.07,53.47 128.88,55.47 135.62,58.58 144.00,60.81 153.25,61.88 164.88,61.75 173.25,60.60 180.12,58.76 182.88,57.68 187.00,55.56 189.60,53.75 192.17,51.50 194.62,48.25 195.75,46.00 196.67,42.38 196.72,3.75 196.24,3.03 180.62,2.88 179.72,3.28 179.50,40.88 178.86,43.62 177.78,45.62 175.96,47.51 172.62,49.82 167.00,51.86 159.25,52.88 153.50,52.54 148.88,51.82 143.50,49.85 140.00,47.51 138.18,45.50 137.08,43.50 136.38,40.00 136.15,3.28 135.25,2.88 120.62,2.88Z M875.08,3.17 874.85,60.12 875.17,60.79 936.58,60.82 936.88,53.50 936.12,52.32 892.88,52.38 892.07,51.99 891.75,51.00 891.75,37.62 892.50,36.21 932.25,36.12 933.07,35.82 933.38,35.00 933.35,28.62 932.50,27.78 892.39,27.61 891.75,26.25 891.75,12.88 892.07,11.89 892.88,11.50 935.88,11.49 936.47,11.11 936.68,10.25 936.44,3.18 935.62,2.88 876.25,2.85Z M775.79,3.50 808.17,60.12 808.75,60.75 809.62,61.00 829.00,61.00 829.79,60.61 862.85,3.50 862.12,2.81 845.62,2.88 844.43,3.40 819.94,48.49 819.25,48.85 818.62,48.58 817.99,47.75 794.18,3.42 793.12,2.83 776.50,2.88Z M728.60,3.18 727.88,2.88 712.75,2.85 712.00,3.26 711.88,26.38 711.12,27.64 668.75,27.75 667.54,27.24 667.12,26.12 667.01,3.28 666.12,2.88 650.53,3.10 650.15,3.75 650.35,60.60 651.25,61.00 666.12,61.00 667.01,60.60 667.12,37.75 667.36,36.88 668.12,36.24 710.25,36.12 711.44,36.56 711.88,37.75 712.00,60.61 712.75,61.01 728.46,60.78 728.79,60.12Z M2.14,3.26 2.00,60.12 2.50,60.97 17.38,61.00 18.50,60.36 18.50,21.88 19.12,21.06 19.92,21.50 45.43,60.35 46.75,60.88 57.00,60.88 58.49,60.00 83.89,21.50 84.88,21.04 85.38,21.88 85.36,60.38 86.38,61.00 100.75,61.00 101.69,60.49 101.79,3.75 101.44,3.03 80.64,3.21 53.75,43.38 51.88,45.11 50.19,43.75 23.12,3.28 22.12,2.83 3.12,2.82Z M554.18,20.75 552.22,26.75 551.88,33.62 552.08,36.38 553.22,40.75 555.25,44.88 558.62,49.38 563.62,53.65 568.75,56.69 576.75,59.60 582.00,60.78 592.38,61.88 602.62,61.62 613.25,59.74 619.38,57.67 626.62,53.67 631.82,48.88 633.61,46.25 635.00,43.25 634.99,42.31 634.25,41.94 618.62,42.00 615.12,46.62 610.50,49.79 603.50,51.94 595.50,52.72 586.62,51.82 580.62,49.81 575.25,46.39 573.18,44.38 570.96,41.25 569.24,36.38 568.88,34.00 569.06,28.12 570.04,24.75 572.21,20.75 575.25,17.50 578.75,15.04 583.00,13.12 587.38,11.93 595.25,11.17 604.25,12.06 608.00,13.07 612.75,15.39 615.38,17.50 618.88,22.28 634.00,22.38 634.79,22.07 634.86,20.50 633.71,17.75 631.69,14.75 628.12,11.18 625.58,9.25 621.88,7.24 613.88,4.25 608.88,3.10 598.25,2.00 588.38,2.25 577.25,4.15 569.00,7.19 562.51,11.06 558.43,14.75Z"></path></svg></div>
   <ul>
     <li><a href="#archive">ARCHIVE</a></li>
     <li><a href="#detail">DETAIL</a></li>
     <li><a href="#contact">CONTACT</a></li>
+    <li><a href="#" class="nav-kr" id="chat-open">고객 상담</a></li>
   </ul>
 </nav>
 
@@ -235,7 +338,7 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   <div class="hero-mark"><svg aria-label="MU:D ARCHIVE" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 939 64" preserveAspectRatio="xMidYMid meet"><path fill="currentColor" fill-rule="evenodd" d="M213.94,46.62 213.88,47.75 213.96,48.50 214.17,49.25 214.49,49.75 215.17,50.60 216.29,51.67 218.12,52.68 220.62,53.49 221.50,53.68 222.12,53.75 225.50,53.75 226.25,53.67 227.12,53.50 228.50,53.01 229.88,52.67 231.62,51.57 232.58,50.69 233.21,49.88 233.68,49.12 233.81,48.75 233.88,48.25 233.83,46.62 233.61,46.00 232.75,44.75 232.46,44.42 231.12,43.31 229.38,42.35 229.00,42.19 227.62,41.93 226.50,41.81 225.00,41.50 222.75,41.50 222.12,41.57 219.50,42.06 219.00,42.19 217.88,42.76 217.00,43.11 215.62,44.03 215.11,44.51 214.18,45.88Z M213.93,15.38 213.88,16.62 213.94,17.25 214.12,17.88 215.03,19.25 215.62,19.88 216.62,20.61 217.75,21.07 218.88,21.72 222.38,22.43 223.00,22.50 224.88,22.50 225.50,22.43 227.88,21.93 228.88,21.68 230.00,21.11 230.88,20.76 231.38,20.44 232.12,19.79 232.76,19.12 233.25,18.50 233.68,17.75 233.82,17.25 233.88,16.75 233.88,15.62 233.81,15.12 233.68,14.75 232.67,13.29 231.50,12.31 230.00,11.40 229.38,11.10 227.88,10.78 226.50,10.29 224.75,10.12 222.62,10.12 222.12,10.18 218.00,11.21 216.40,12.17 215.29,13.18 214.24,14.50 214.06,14.88Z M747.25,2.93 746.72,3.28 746.50,4.00 746.56,60.25 746.90,60.78 747.62,61.00 762.88,60.92 763.38,60.57 763.57,60.00 763.56,3.62 763.11,3.03 762.50,2.88Z M470.25,3.28 470.08,60.12 470.43,60.85 486.12,61.03 486.88,60.61 487.00,40.88 487.31,40.08 488.25,39.75 504.12,39.75 505.12,40.01 523.75,60.89 541.25,61.01 541.74,60.79 541.49,59.75 522.64,38.50 523.12,37.79 528.88,35.68 532.88,33.28 536.67,29.58 538.61,25.88 539.12,22.62 538.76,17.38 537.61,14.62 534.25,10.40 531.25,8.26 527.00,6.14 520.88,4.25 515.62,3.31 506.62,2.88 471.12,2.88Z M487.06,12.38 487.22,12.01 487.51,11.72 488.25,11.50 505.38,11.50 511.12,11.96 514.75,12.89 517.25,13.96 518.88,15.08 519.62,15.75 520.85,17.25 521.57,18.75 521.93,20.12 522.00,21.25 521.76,23.50 520.79,25.62 518.62,27.82 517.00,28.79 514.88,29.71 514.12,29.92 509.50,30.79 507.25,31.00 487.75,30.94 487.21,30.60 487.00,30.00Z M371.03,60.38 371.29,60.90 371.75,61.07 388.49,60.86 390.47,58.00 396.14,47.51 396.75,46.94 398.00,46.62 432.12,46.71 432.89,47.25 439.26,59.00 440.53,60.82 457.38,61.00 457.92,60.79 458.08,60.38 425.35,3.50 424.12,2.88 404.88,2.88 403.68,3.50Z M414.26,14.89 414.62,14.82 414.88,14.90 415.50,15.50 417.26,18.88 417.88,19.75 418.79,21.38 419.19,22.38 420.17,24.12 420.86,25.12 422.11,27.62 422.75,28.62 423.24,29.62 423.76,30.38 424.19,31.38 426.78,35.88 427.44,37.38 427.42,37.74 427.11,38.08 426.38,38.25 402.75,38.25 402.25,38.15 401.85,37.85 401.72,37.50 401.82,37.00 402.50,36.00 403.08,34.62 405.03,31.12 405.68,30.12 406.07,29.12 406.68,28.12 406.99,27.38 408.68,24.62 409.08,23.62 411.68,19.12 412.07,18.12 413.00,16.50 413.86,15.25Z M251.18,3.39 251.08,60.12 251.53,60.90 290.50,60.88 299.50,59.78 304.25,58.74 310.88,56.60 314.88,54.68 318.35,52.61 323.00,48.62 326.68,43.62 328.64,38.88 329.50,32.88 329.44,29.88 328.57,24.75 326.56,20.00 323.40,15.62 321.25,13.47 318.38,11.21 315.12,9.19 311.12,7.24 305.38,5.35 300.38,4.18 294.12,3.25 285.38,2.88 252.12,2.88Z M268.22,12.18 268.62,11.88 269.25,11.75 283.62,11.75 290.62,12.04 293.50,12.68 296.50,13.11 297.75,13.62 299.50,14.01 300.62,14.57 302.25,15.07 305.38,16.99 308.15,19.50 309.86,21.62 310.79,23.38 311.79,25.88 312.17,27.75 312.50,30.50 312.50,33.38 311.83,38.00 310.83,40.38 308.92,43.50 306.62,45.82 303.62,47.93 302.00,48.82 300.50,49.28 299.38,49.86 295.50,50.94 288.38,52.00 269.50,52.12 268.39,51.79 268.00,51.00 268.00,12.88Z M119.65,3.39 119.69,43.25 120.42,46.12 122.21,49.38 126.07,53.47 128.88,55.47 135.62,58.58 144.00,60.81 153.25,61.88 164.88,61.75 173.25,60.60 180.12,58.76 182.88,57.68 187.00,55.56 189.60,53.75 192.17,51.50 194.62,48.25 195.75,46.00 196.67,42.38 196.72,3.75 196.24,3.03 180.62,2.88 179.72,3.28 179.50,40.88 178.86,43.62 177.78,45.62 175.96,47.51 172.62,49.82 167.00,51.86 159.25,52.88 153.50,52.54 148.88,51.82 143.50,49.85 140.00,47.51 138.18,45.50 137.08,43.50 136.38,40.00 136.15,3.28 135.25,2.88 120.62,2.88Z M875.08,3.17 874.85,60.12 875.17,60.79 936.58,60.82 936.88,53.50 936.12,52.32 892.88,52.38 892.07,51.99 891.75,51.00 891.75,37.62 892.50,36.21 932.25,36.12 933.07,35.82 933.38,35.00 933.35,28.62 932.50,27.78 892.39,27.61 891.75,26.25 891.75,12.88 892.07,11.89 892.88,11.50 935.88,11.49 936.47,11.11 936.68,10.25 936.44,3.18 935.62,2.88 876.25,2.85Z M775.79,3.50 808.17,60.12 808.75,60.75 809.62,61.00 829.00,61.00 829.79,60.61 862.85,3.50 862.12,2.81 845.62,2.88 844.43,3.40 819.94,48.49 819.25,48.85 818.62,48.58 817.99,47.75 794.18,3.42 793.12,2.83 776.50,2.88Z M728.60,3.18 727.88,2.88 712.75,2.85 712.00,3.26 711.88,26.38 711.12,27.64 668.75,27.75 667.54,27.24 667.12,26.12 667.01,3.28 666.12,2.88 650.53,3.10 650.15,3.75 650.35,60.60 651.25,61.00 666.12,61.00 667.01,60.60 667.12,37.75 667.36,36.88 668.12,36.24 710.25,36.12 711.44,36.56 711.88,37.75 712.00,60.61 712.75,61.01 728.46,60.78 728.79,60.12Z M2.14,3.26 2.00,60.12 2.50,60.97 17.38,61.00 18.50,60.36 18.50,21.88 19.12,21.06 19.92,21.50 45.43,60.35 46.75,60.88 57.00,60.88 58.49,60.00 83.89,21.50 84.88,21.04 85.38,21.88 85.36,60.38 86.38,61.00 100.75,61.00 101.69,60.49 101.79,3.75 101.44,3.03 80.64,3.21 53.75,43.38 51.88,45.11 50.19,43.75 23.12,3.28 22.12,2.83 3.12,2.82Z M554.18,20.75 552.22,26.75 551.88,33.62 552.08,36.38 553.22,40.75 555.25,44.88 558.62,49.38 563.62,53.65 568.75,56.69 576.75,59.60 582.00,60.78 592.38,61.88 602.62,61.62 613.25,59.74 619.38,57.67 626.62,53.67 631.82,48.88 633.61,46.25 635.00,43.25 634.99,42.31 634.25,41.94 618.62,42.00 615.12,46.62 610.50,49.79 603.50,51.94 595.50,52.72 586.62,51.82 580.62,49.81 575.25,46.39 573.18,44.38 570.96,41.25 569.24,36.38 568.88,34.00 569.06,28.12 570.04,24.75 572.21,20.75 575.25,17.50 578.75,15.04 583.00,13.12 587.38,11.93 595.25,11.17 604.25,12.06 608.00,13.07 612.75,15.39 615.38,17.50 618.88,22.28 634.00,22.38 634.79,22.07 634.86,20.50 633.71,17.75 631.69,14.75 628.12,11.18 625.58,9.25 621.88,7.24 613.88,4.25 608.88,3.10 598.25,2.00 588.38,2.25 577.25,4.15 569.00,7.19 562.51,11.06 558.43,14.75Z"></path></svg></div>
   <canvas class="tangle" aria-label="잡고 돌릴 수 있는 엉킨 선 오브젝트"></canvas>
   <div class="hero-foot">
-    <p class="hero-line kr">MU:D</p>
+    <p class="hero-line">MU:D</p>
     <p class="hero-hint">DRAG TO ROTATE</p>
   </div>
 </header>
@@ -381,7 +484,9 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
     <h2>Q&amp;A</h2>
     <span>질문과 답은 모두에게 공개됩니다</span>
   </div>
-  <p class="qna-intro kr">사이즈, 소재, 입고 일정 — 무엇이든 물어보세요. 오간 이야기는 그대로 아카이브에 남습니다.</p>
+  <p class="qna-intro kr">사이즈, 소재, 입고 일정 — 무엇이든 물어보세요. 오간 이야기는 그대로 아카이브에 남습니다.<br>
+    바로 답이 필요하면 아래에서 상담을 시작하세요.</p>
+  <button class="chat-open-inline" type="button" data-chat-open>고객 상담 시작하기</button>
 
   <h3 class="sr-only">질문 남기기</h3>
   <form class="ask-form" id="ask-form">
@@ -394,7 +499,7 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
       <textarea id="ask-body" maxlength="1000" required placeholder="사이즈, 소재, 입고 일정, 무엇이든"></textarea>
     </div>
     <div class="ask-foot">
-      <p class="hint">한 번 올린 글은 직접 지울 수 없습니다. 개인정보는 적지 마세요.</p>
+      <p class="hint" id="ask-msg">한 번 올린 글은 직접 지울 수 없습니다. 개인정보는 적지 마세요.</p>
       <button class="send" type="submit" id="ask-send">질문 올리기</button>
     </div>
   </form>
@@ -447,7 +552,13 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
     wobble: 0.085,     // 선이 일렁이는 폭 (0이면 형태 고정)
     wobbleSpeed: 0.45, // 일렁이는 속도
 
-    autoSpin: 0.0022,  // 전체 자동 회전 속도 (0이면 멈춤)
+    autoSpin: 0.0022,  // 가만히 둘 때의 느린 회전 (0이면 멈춤)
+    drag: 0.013,       // 끄는 감도 — 클수록 가볍게 돌아갑니다
+    throwPickup: 0.38, // 손을 뗄 때 직전 움직임을 얼마나 반영할지 (0~1)
+    throwBoost: 1.7,   // 놓는 순간 붙는 가속
+    friction: 0.986,   // 1에 가까울수록 오래 미끄러집니다
+    maxSpin: 0.15,     // 최대 속도 (너무 빨라지지 않게)
+
     size: 0.40,        // 화면 대비 크기 (데스크톱)
     sizeNarrow: 0.26   // 좁은 화면에서의 크기 — 로고가 가려지지 않게
   };
@@ -551,19 +662,29 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var velX = 0, velY = 0, pendX = 0, pendY = 0;
+  var throwX = 0, throwY = 0;                 /* 손을 뗄 때 넘겨줄 속도 */
   var dragging = false, lastX = 0, lastY = 0, pid = null;
+  function cap(v) { var m = CFG.maxSpin; return v > m ? m : (v < -m ? -m : v); }
 
   cv.addEventListener('pointerdown', function (e) {
     dragging = true; pid = e.pointerId; lastX = e.clientX; lastY = e.clientY;
-    velX = velY = 0; cv.setPointerCapture(pid); cv.classList.add('is-grabbing');
+    velX = velY = 0; throwX = throwY = 0;
+    cv.setPointerCapture(pid); cv.classList.add('is-grabbing');
   });
   cv.addEventListener('pointermove', function (e) {
     if (!dragging || e.pointerId !== pid) return;
-    pendY += (e.clientX - lastX) * 0.008;
-    pendX += (e.clientY - lastY) * 0.008;
+    pendY += (e.clientX - lastX) * CFG.drag;
+    pendX += (e.clientY - lastY) * CFG.drag;
     lastX = e.clientX; lastY = e.clientY;
   });
-  function end() { dragging = false; pid = null; cv.classList.remove('is-grabbing'); }
+  function end() {
+    if (dragging) {                            /* 던지기 — 놓는 순간 가속이 붙습니다 */
+      velX = cap(throwX * CFG.throwBoost);
+      velY = cap(throwY * CFG.throwBoost);
+    }
+    dragging = false; pid = null; throwX = throwY = 0;
+    cv.classList.remove('is-grabbing');
+  }
   cv.addEventListener('pointerup', end);
   cv.addEventListener('pointercancel', end);
   cv.addEventListener('dblclick', function () { M = HOME; velX = velY = 0; });
@@ -594,8 +715,16 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   function draw(now) {
     var T = (now - t0) / 1000;
 
-    if (dragging) { velX = pendX; velY = pendY; pendX = pendY = 0; }
-    else { velX *= 0.95; velY *= 0.95; }
+    if (dragging) {
+      velX = pendX; velY = pendY; pendX = pendY = 0;
+      /* 직전 움직임을 모아 둡니다 — 손을 떼면 이 속도로 던져집니다 */
+      throwX = throwX * (1 - CFG.throwPickup) + velX * CFG.throwPickup;
+      throwY = throwY * (1 - CFG.throwPickup) + velY * CFG.throwPickup;
+    } else {
+      velX *= CFG.friction; velY *= CFG.friction;
+      if (Math.abs(velX) < 2e-5) velX = 0;
+      if (Math.abs(velY) < 2e-5) velY = 0;
+    }
     var spin = (dragging || reduce) ? 0 : CFG.autoSpin;
     M = ortho(mul(rotX(velX), mul(rotY(velY + spin), M)));
 
@@ -736,8 +865,25 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   }
 
   /* ---------- 서버와 주고받기 ---------- */
+  /* 응답이 JSON이 아니거나 서버가 죽어도 반드시 무언가를 돌려줍니다 */
+  function parse(r) {
+    return r.text().then(function (t) {
+      var j;
+      try { j = JSON.parse(t); } catch (e) {
+        j = { error: '서버가 응답을 제대로 주지 않았습니다 (' + r.status + '). '
+                   + (t ? t.replace(/<[^>]*>/g, ' ').trim().slice(0, 140) : '/api/qna 가 배포되지 않았을 수 있습니다.') };
+      }
+      if (!j || typeof j !== 'object') j = { error: '알 수 없는 응답 (' + r.status + ')' };
+      j._status = r.status;
+      if (!r.ok && !j.error) j.error = '요청이 거절되었습니다 (' + r.status + ')';
+      return j;
+    });
+  }
+  function fail(e) {
+    return { error: '서버에 닿지 못했습니다. ' + (e && e.message ? e.message : '잠시 후 다시 시도해 주세요.') };
+  }
   function get() {
-    return fetch('/api/qna', { cache: 'no-store' }).then(function (r) { return r.json(); });
+    return fetch('/api/qna', { cache: 'no-store' }).then(parse).catch(fail);
   }
   function post(payload) {
     if (pw) payload.password = pw;
@@ -745,7 +891,7 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    }).then(function (r) { return r.json().then(function (j) { j._status = r.status; return j; }); });
+    }).then(parse).catch(fail);
   }
 
   function apply(j) {
@@ -797,11 +943,24 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
       var name = i1.value.trim(), text = i2.value.trim();
       if (!name || !text) return;
       btn.disabled = true; btn.textContent = '올리는 중';
-      post({ action: 'reply', question_id: q.id, name: name, body: text }).then(function (j) {
+      var note = foot.querySelector('.hint');
+      note.textContent = '';
+      var done = false;
+      var guard = setTimeout(function () {
+        if (done) return;
+        done = true;
         btn.disabled = false; btn.textContent = '댓글 남기기';
-        if (j.error) { window.alert(j.error); return; }
+        note.textContent = '응답이 오지 않습니다. 다시 시도해 주세요.';
+        note.style.color = '#B23B2E';
+      }, 15000);
+
+      post({ action: 'reply', question_id: q.id, name: name, body: text }).then(function (j) {
+        if (done) return;
+        done = true; clearTimeout(guard);
+        btn.disabled = false; btn.textContent = '댓글 남기기';
+        if (j.error) { note.textContent = j.error; note.style.color = '#B23B2E'; return; }
         openIds[q.id] = false;
-        apply(j);
+        if (j.questions) apply(j); else tick();
       });
     });
     return f;
@@ -856,17 +1015,43 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   }
 
   /* ---------- 질문 올리기 ---------- */
+  var askMsg = document.getElementById('ask-msg');
+  var askMsgDefault = askMsg.textContent;
+  function msg(t, bad) {
+    askMsg.textContent = t || askMsgDefault;
+    askMsg.style.color = bad ? '#B23B2E' : '';
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var name = document.getElementById('ask-name').value.trim();
     var text = document.getElementById('ask-body').value.trim();
-    if (!name || text.length < 2) return;
+    if (!name || text.length < 2) { msg('이름과 질문을 채워주세요.', true); return; }
+
     sendBtn.disabled = true; sendBtn.textContent = '올리는 중';
-    post({ action: 'ask', name: name, body: text }).then(function (j) {
+    msg('올리는 중입니다…');
+
+    /* 15초 안에 응답이 없어도 버튼을 되살립니다 */
+    var done = false;
+    var guard = setTimeout(function () {
+      if (done) return;
+      done = true;
       sendBtn.disabled = false; sendBtn.textContent = '질문 올리기';
-      if (j.error) { window.alert(j.error); return; }
+      msg('응답이 오지 않습니다. 잠시 후 다시 시도해 주세요.', true);
+    }, 15000);
+
+    post({ action: 'ask', name: name, body: text }).then(function (j) {
+      if (done) return;
+      done = true; clearTimeout(guard);
+      sendBtn.disabled = false; sendBtn.textContent = '질문 올리기';
+
+      if (j.error) { msg(j.error, true); return; }
+
       document.getElementById('ask-body').value = '';
-      apply(j);
+      msg('올라갔습니다.');
+      setTimeout(function () { msg(''); }, 4000);
+
+      if (j.questions) apply(j); else tick();
       var box = document.querySelector('.thread');
       window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
     });
@@ -931,13 +1116,207 @@ section{padding:clamp(88px,13vh,170px) var(--gut)}
   /* ---------- 시작 ---------- */
   get().then(function (j) {
     if (j && j.error) {
-      say('아직 준비 중입니다', 'Vercel 환경 변수(GITHUB_TOKEN, GITHUB_REPO, ADMIN_PASSWORD)를 넣으면 질문이 열립니다.');
-      form.querySelectorAll('input,textarea,button').forEach(function (n) { n.disabled = true; });
+      if (j.setup) {
+        say('아직 준비 중입니다', 'Vercel 환경 변수(GITHUB_TOKEN, GITHUB_REPO, ADMIN_PASSWORD)를 넣고 Redeploy 하면 질문이 열립니다.');
+        form.querySelectorAll('input,textarea,button').forEach(function (n) { n.disabled = true; });
+      } else {
+        say('질문을 불러오지 못했습니다', j.error + '  주소 끝에 /api/qna?check=1 을 열면 원인을 볼 수 있습니다.');
+      }
       return;
     }
     apply(j);
-  }).catch(function () {
-    say('연결하지 못했습니다', '잠시 후 다시 열어주세요.');
+  });
+})();
+</script>
+<div class="chat-veil" id="chat-veil" hidden></div>
+<aside class="chat" id="chat" role="dialog" aria-modal="true" aria-label="고객 상담" hidden>
+  <div class="chat-head">
+    <div>
+      <div class="mk"><svg viewBox="0 0 939 64" role="img" aria-label="MU:D ARCHIVE"><use href="#mud-wordmark"></use></svg></div>
+      <div class="ttl">고객 상담</div>
+    </div>
+    <button class="chat-x" type="button" id="chat-close" aria-label="닫기">&times;</button>
+  </div>
+
+  <div class="chat-log" id="chat-log" aria-live="polite"></div>
+
+  <div class="chat-foot">
+    <form class="chat-form" id="chat-form">
+      <textarea id="chat-input" rows="1" maxlength="500" placeholder="무엇이 궁금하신가요?" aria-label="질문"></textarea>
+      <button class="chat-send" type="submit" id="chat-send">보내기</button>
+    </form>
+    <p class="chat-note">
+      브랜드 안내 자료를 바탕으로 답합니다. 가격·재고·배송처럼 확정되지 않은 사항은 공식 창구로 안내해 드립니다.
+      운영자에게 직접 물으려면 <a href="#contact" data-chat-toqna>Q&amp;A 게시판</a>을 이용하세요.
+    </p>
+  </div>
+</aside>
+
+<script>
+(function () {
+  var veil = document.getElementById('chat-veil');
+  var panel = document.getElementById('chat');
+  var log = document.getElementById('chat-log');
+  var form = document.getElementById('chat-form');
+  var input = document.getElementById('chat-input');
+  var sendBtn = document.getElementById('chat-send');
+  if (!panel) return;
+
+  var CHIPS = [
+    '브랜드 소개해 주세요',
+    'MM 라인과 M:D 라인 차이가 뭔가요?',
+    'State가 무슨 뜻인가요?',
+    '이름이 왜 바뀌었나요?'
+  ];
+  var KEY = 'mud-chat-v1';
+  var history = [];      /* Claude에 보낼 대화 기록 */
+  var busy = false;
+  var lastFocus = null;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;   /* 항상 textContent — 입력은 HTML로 해석되지 않습니다 */
+    return n;
+  }
+
+  function bubble(role, text) {
+    var m = el('div', 'msg ' + (role === 'user' ? 'me' : role === 'error' ? 'err' : 'bot'));
+    var who = el('div', 'who');
+    if (role === 'assistant') who.appendChild(el('span', 'tag', 'MU:D'));
+    who.appendChild(el('span', null, role === 'user' ? '나' : role === 'error' ? '안내' : '상담'));
+    m.appendChild(who);
+    m.appendChild(el('p', 'txt', text));
+    log.appendChild(m);
+    log.scrollTop = log.scrollHeight;
+    return m;
+  }
+
+  function chips() {
+    var box = el('div', 'chat-chips');
+    CHIPS.forEach(function (c) {
+      var b = el('button', null, c);
+      b.type = 'button';
+      b.addEventListener('click', function () { box.remove(); ask(c); });
+      box.appendChild(b);
+    });
+    log.appendChild(box);
+  }
+
+  function greet() {
+    bubble('assistant', 'MU:D ARCHIVE입니다. 브랜드와 제품에 대해 궁금한 점을 물어보세요.');
+    chips();
+  }
+
+  function save() {
+    try { sessionStorage.setItem(KEY, JSON.stringify(history.slice(-12))); } catch (e) {}
+  }
+  function restore() {
+    var raw; try { raw = sessionStorage.getItem(KEY); } catch (e) { return false; }
+    if (!raw) return false;
+    var d; try { d = JSON.parse(raw); } catch (e) { return false; }
+    if (!Array.isArray(d) || !d.length) return false;
+    history = d;
+    history.forEach(function (m) { bubble(m.role, m.content); });
+    return true;
+  }
+
+  /* ---------- 보내기 ---------- */
+  function ask(text) {
+    if (busy) return;
+    var q = String(text || '').trim();
+    if (q.length < 2) return;
+
+    bubble('user', q);
+    history.push({ role: 'user', content: q });
+    save();
+    input.value = ''; input.style.height = 'auto';
+
+    busy = true; sendBtn.disabled = true; sendBtn.textContent = '…';
+    var wait = el('div', 'msg bot');
+    var w = el('div', 'who'); w.appendChild(el('span', 'tag', 'MU:D')); w.appendChild(el('span', null, '상담'));
+    wait.appendChild(w);
+    var dots = el('div', 'chat-wait');
+    dots.appendChild(el('i')); dots.appendChild(el('i')); dots.appendChild(el('i'));
+    wait.appendChild(dots);
+    log.appendChild(wait); log.scrollTop = log.scrollHeight;
+
+    var done = false;
+    var guard = setTimeout(function () {
+      if (done) return;
+      done = true; finish();
+      wait.remove();
+      bubble('error', '답변이 오지 않습니다. 잠시 후 다시 시도하시거나 Q&A 게시판에 남겨주세요.');
+    }, 45000);
+
+    function finish() {
+      busy = false; sendBtn.disabled = false; sendBtn.textContent = '보내기';
+    }
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, history: history.slice(0, -1).slice(-8) })
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var j;
+        try { j = JSON.parse(t); }
+        catch (e) {
+          j = { error: '상담 창구에 연결하지 못했습니다 (' + r.status + '). 잠시 후 다시 시도해 주세요.' };
+        }
+        return j;
+      });
+    }).catch(function () {
+      return { error: '연결이 끊겼습니다. 인터넷 상태를 확인한 뒤 다시 시도해 주세요.' };
+    }).then(function (j) {
+      if (done) return;
+      done = true; clearTimeout(guard); finish();
+      wait.remove();
+
+      if (j.error) { bubble('error', j.error); return; }
+      var a = j.answer || '';
+      bubble('assistant', a);
+      history.push({ role: 'assistant', content: a });
+      save();
+    });
+  }
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });
+
+  /* Enter로 보내고, Shift+Enter로 줄바꿈 */
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(input.value); }
+  });
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 132) + 'px';
+  });
+
+  /* ---------- 열고 닫기 ---------- */
+  function open() {
+    lastFocus = document.activeElement;
+    veil.hidden = false; panel.hidden = false;
+    requestAnimationFrame(function () { veil.classList.add('on'); panel.classList.add('on'); });
+    document.body.style.overflow = 'hidden';
+    if (!log.children.length) { if (!restore()) greet(); }
+    setTimeout(function () { input.focus(); }, 280);
+  }
+  function close() {
+    veil.classList.remove('on'); panel.classList.remove('on');
+    document.body.style.overflow = '';
+    setTimeout(function () { veil.hidden = true; panel.hidden = true; }, 260);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.getElementById('chat-open').addEventListener('click', function (e) { e.preventDefault(); open(); });
+  document.querySelectorAll('[data-chat-open]').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); open(); });
+  });
+  document.getElementById('chat-close').addEventListener('click', close);
+  veil.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panel.classList.contains('on')) close(); });
+  document.querySelectorAll('[data-chat-toqna]').forEach(function (a) {
+    a.addEventListener('click', function () { close(); });
   });
 })();
 </script>
